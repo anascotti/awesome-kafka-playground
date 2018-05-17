@@ -1,0 +1,10 @@
+target/
+bin/
+*.versionsBackup
+
+
+.classpath
+.project
+.settings
+
+
