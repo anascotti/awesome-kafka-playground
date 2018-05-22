@@ -23,7 +23,6 @@ public class AwesomeProducerApplication {
                 ProducerRecord<String, String> record = new ProducerRecord<String, String>("awesome_topic", "Key-00" + i, "Msg " + i);
                 final Future<RecordMetadata> future = awesomeProducer.send(record);
                 app.displayRecordMetaData(record, future);
-                
             }
         } catch (Exception e) {
             e.printStackTrace();
