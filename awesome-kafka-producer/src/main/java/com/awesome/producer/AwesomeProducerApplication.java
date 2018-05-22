@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -19,8 +20,8 @@ public class AwesomeProducerApplication {
         KafkaProducer<String, String> awesomeProducer = new KafkaProducer<>(app.loadProperties());
         
         try {
-            for (int i = 0; i < 50; i++) {
-                ProducerRecord<String, String> record = new ProducerRecord<String, String>("awesome_topic", "Key-00" + i, "Msg " + i);
+            for (int i = 0; i < 1000; i++) {
+                ProducerRecord<String, String> record = new ProducerRecord<String, String>("awesome_topic", "Key-00" + i, UUID.randomUUID().toString() );
                 final Future<RecordMetadata> future = awesomeProducer.send(record);
                 app.displayRecordMetaData(record, future);
             }

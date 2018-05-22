@@ -9,8 +9,17 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 public class AwesomeConsumerSubscribeApplication implements AwesomeConsumer{
 
     public static void main(String[] args) {
-        AwesomeConsumerSubscribeApplication app = new AwesomeConsumerSubscribeApplication();
-        app.start();
+        AwesomeConsumerSubscribeApplication consumer1 = new AwesomeConsumerSubscribeApplication();
+        Thread t1 = new Thread(() -> consumer1.start());
+        t1.start();
+        
+        AwesomeConsumerSubscribeApplication consumer2 = new AwesomeConsumerSubscribeApplication();
+        Thread t2 = new Thread(() -> consumer2.start());
+        t2.start();
+        
+        AwesomeConsumerSubscribeApplication consumer3 = new AwesomeConsumerSubscribeApplication();
+        Thread t3 = new Thread(() -> consumer3.start());
+        t3.start();
     }
 
     @Override
@@ -21,11 +30,10 @@ public class AwesomeConsumerSubscribeApplication implements AwesomeConsumer{
         try {
             while (true) {
                 ConsumerRecords<String, String> records = awesomeConsumer.poll(10000); // msg retrievel cycle, single threaded
-                System.out.println("Records received: " + records.count());
                 records.forEach(this::handleMessage);
-                awesomeConsumer.commitAsync((offsets, ex) -> {
-                    offsets.forEach((k,v) -> System.out.println("k=" + k + "v=" + v ));
-                });
+//                awesomeConsumer.commitAsync((offsets, ex) -> {
+//                    offsets.forEach((k,v) -> System.out.println("k=" + k + "v=" + v ));
+//                });
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -36,8 +44,14 @@ public class AwesomeConsumerSubscribeApplication implements AwesomeConsumer{
 
     @Override
     public void handleMessage(ConsumerRecord<?, ?> record) {
-        System.out.println(String.format("\ntopic=%s, partition=%d " + "\noffset=%d key=%s value=%s",
-                record.topic(), record.partition(), record.offset(), record.key(), record.value()));
+        String value = (String) record.value();
+        System.out.println(String.format("\n thread=%s, topic=%s, partition=%d " + "\noffset=%d key=%s value=%s",
+                Thread.currentThread().getName(),
+                record.topic(), 
+                record.partition(), 
+                record.offset(), 
+                record.key(), 
+                value.replace("-", "").toUpperCase()));
     }
 
 }
